@@ -65,36 +65,71 @@
 % Object-orientism is that paradigm in
 %   computer programming and systems design where
 %   every element of the program is perceived to have
-%   state and 
+%   state and function.
+% It is a system by which you can look at things like \pkg{l3seq}
+%   and create \emph{new} data structures with associated abilities.
+% It is a means by which you can create and maintain a \texttt{circle} object,
+%   give it properties, give it abilities, and give it uses.\footnote{That is, a \texttt{circle} could be a property of another class.}
+% 
 % \section{Document-Level Use}
-% \subsection{Declaring Classes}
-% \begin{function}[updated = 2013/08/11]{\NewClass}
+% \subsection{Data Structures}
+% We will work through this package as most early languages worked through their own time.
+% Through \TeX\ we have data (via macros) and
+%   through \LaTeX3 we have a certain set of \emph{data structures}.\footnote{^^A
+% Briefly, a \emph{data structure} is what we call
+%   a collection of different pieces of data that
+%   have cohesive meaning or value when grouped together and taken as a whole.}
+% Wouldn't it be nice to have your \emph{own} data structure?
+% \begin{function}[updated = 2013/08/16]{\NewDataStructureSpecification}
 %   \begin{syntax}
-%     \cs{NewClass} \oarg{superclass name} \marg{class name} \oarg{property specification}
+%     \cs{NewDataStructureSpecification} \oarg{superstructure name} \marg{structure name} \marg{property specification}
 %   \end{syntax}
-%   Declares a new class. ^^A \prop_new:N \g_@@_Class_ClassName
+%   Declares a new data structure. ^^A \prop_new:N \g_@@_Class_ClassName
+%   \meta{superstructure name} is another \emph{defined} data structure name (as was given in its own \meta{structure name}).
+%
+%   This creates a \pkg{l3prop} property list of the form \cs{g_@@_ds_\meta{class name}__properties_prop} to hold something like the following:
+% \begin{verbatim}
+%                color = default,
+%   some_base_property = values,
+% some_object_property = here
+% \end{verbatim}
+%   Note that this continues the \LaTeX3 trend of `it all depends on interpretation.'
+%   There is only one real type for any given property, and that's the token list.
+%   It is the methods of your object which will do the interpreting.
 % \end{function}
 
-% \begin{function}[updated = 2013/08/11]{\SetClassProperties}
+% \begin{function}[updated = 2013/08/15]{\NewClass}
 %   \begin{syntax}
-%     \cs{SetClassProperties} \marg{class name} \marg{property specification}
+%     \cs{NewClass} \oarg{superclass name} \marg{data structure name} \marg{class name} \marg{functions}
 %   \end{syntax}
-%   Sets class properties.
-%   ^^A \prop_clear:N etc.
+% \begin{verbatim}
+% \NewClass { shape } { Shape } {
+%   print:N = {
+%     The object is
+%     ##1 % is always the object
+%    },
+%   
+%   print_qualities:N = {
+%     % \shape_get/set family from data structure
+%     The object has size \shape_get_size:N { ##1 }
+%    }
+% }
+% \end{verbatim}
 % \end{function}
 
 % \begin{function}[updated = 2013/08/11]{\NewObject}
 %   \begin{syntax}
 %     \cs{NewObject} \marg{class name} \marg{handler} \oarg{property specification}
 %   \end{syntax}
-%   
+%   Creates an object of type \meta{class name} with the handler \meta{handler} and optionally its properties.
 % \end{function}
 
 % \begin{function}[updated = 2013/08/11]{\SetObject}
 %   \begin{syntax}
 %     \cs{SetObjectProperties} \marg{handler} \marg{property specification}
 %   \end{syntax}
-%   
+%   Sets specific properties for \meta{handler}.
+%   It is a type error if those properties do not exist.
 % \end{function}
 
 % \end{documentation}
