@@ -1,0 +1,86 @@
+% (load "./l3tools.el")
+\documentclass{article}
+\usepackage{filecontents}
+
+\begin{filecontents*}{l3tools.el}
+; -*- mode: lisp-interaction -*-
+(setq l3spacemode nil)
+(local-set-key (kbd "SPC") (lambda () (interactive) (insert (if l3spacemode "~ " " "))))
+(local-set-key (kbd "C-c C-SPC") (lambda () (interactive) (message "LaTeX3 space mode is now %s." (if (setq l3spacemode (not l3spacemode)) "on" "off"))))
+\end{filecontents*}
+
+\begin{filecontents}{expl3ext.sty}
+\ProvidesPackage{expl3ext}[2013/08/24 expl3ext: Extensions to the expl3 language]
+\RequirePackage{expl3}
+\ExplSyntaxOn
+
+\msg_new:nnnn { expl3ext } { Data~ Structure~ Undefined }
+  { The~ Data~ structure~ ``#1''~ is~ undefined. }
+  { The~ data~ structure~ you~ have~ tried~ to~ alter~ does~ not~
+    exist.~~ Did~ you~ create~ it~ with~ `ds_new:c'? }
+
+% To manage our typing, we will have a property list going from
+% type -> supertype,subtype,...,subtype
+%
+% I'm going to call this the 'type dictionary'
+\prop_new:N \g__ds_types_supertype_subtypes_prop
+
+% Create a new type (#1) that has a supertype (#2)
+\cs_new:Nn \ds_new_with_super:nn
+ {
+   % Create a new comma list for the type's supertype (first element)
+   % and subtypes (subsequent elements)
+  \clist_new:c
+   { g__types__ #1 __supertype_subtypes_clist }
+
+   % Add the type's supertype
+  \clist_put_right:cn
+   { g__types__ #1 __supertype_subtypes_clist }
+   { #2 }
+
+   % Make the association in our type dictionary
+  \prop_put:Nnn \g__ds_types_supertype_subtypes_prop
+   { #1 }
+   { \use:c { g__types__ #1 __supertype_subtypes_clist } }
+ }
+
+
+% Create a new type (#1) that has no supertypes
+\cs_new:Nn \ds_new:n
+ {
+  \ds_new_with_super:nn { #1 } { \q_no_value }
+ }
+
+
+% a comma-separated list of reserved 'types'
+%\clist_new:N  \g__ds_reserved_types_clist
+%\clist_set:Nn \g__ds_reserved_types_clist
+% {
+%  cs,tl,exp,prg,bool,if,group,scan,quark,token,int,skip,tl,seq,clist,prop,box,vbox,hbox,coffin,vcoffin,hcoffin,color,msg,keys,file,ior,iow,fp,dim,lua,cctab,muskip,q,quark
+% }
+
+%\cs_new:Npn \_ds_if_reserved_p:n #1
+% {
+%  \bool_if_p:n
+%   {
+%    \clist_if_in:NnTF \g__ds_reserved_types_clist { #1 } \c_true_bool \c_false_bool
+%    
+%   }
+% }
+
+\ExplSyntaxOff
+\end{filecontents}
+\usepackage{expl3ext}
+
+\ExplSyntaxOn
+
+\ds_new:n { My_Type }
+
+\begin{document}
+Hi
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
