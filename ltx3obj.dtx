@@ -166,6 +166,65 @@
 % I forgot to turn Dropbox on.
 % (This is before I made the \texttt{git} repository, of course.)
 
+%    \begin{macrocode}
+  { % Create a new class called Shape
+    \NewClass{Shape}
+  
+    \prop_new:c \g_@@_Class__Shape
+  }
+  
+  \def\@@_add_class_prop:w #1.#2 #3..{\prop_add:Nnn { #1 } { #2 } { #3 }}
+  
+  { % Set its properties
+    \SetClassProperties{Shape}{
+      .color tl,
+      .parent \ReferenceClass{Shape}
+    }
+  
+    \clist_set:Nn \l_tmpa_clist { #2 }
+    \clist_map:Nn \l_tmpa_clist {
+      \@@_add_class_prop:w { g_@@_Class__Shape } ##1..
+    }
+  }
+  
+  { % Create a new subclass Ball(Shape) with properties
+    \NewClass[Shape]{Ball}[
+    .radius int
+    ]
+  
+    \prop_new:c { g_@@_Class__Ball }
+    \prop_set_eq:NN \g_@@_Class__Ball \g_@@_Class.Shape
+  
+    \clist_set:Nn \l_tmpa_clist { #2 }
+    \clist_map:Nn \l_tmpa_clist {
+      \@@_add_class_prop:w { g_@@_Class.Ball } ##1..
+    }
+  }
+  
+  { % Create a new Shape called myShape
+    \NewObject{Shape}{myShape}
+    % and set its properties; note the undefined \ClassReference should have a -NoValue- marker
+    \SetObjectProperties{myShape}{
+      color = blue,
+    }
+  
+    \prop_new:N \g_@@_Object__myShape
+    
+  }
+  
+  { % Create a new Ball called myBall and set its properties
+    \NewObject{Ball}{myBall}[
+    color = purple with a hint of orange,
+    radius = 5
+    parent = \ReferenceObject{myShape}
+    ]
+  }
+  
+  \UseObjectProperty{myBall.color}
+  \SetObjectProperty{myBall.parent}{\ReferenceObject{myShape}}
+
+%    \end{macrocode}
+
 % \end{implementation}
 %
 % \PrintIndex
