@@ -64,3 +64,9 @@
         \prop_put:NVV #2 \l_parse_prop_key_tl \l_parse_prop_value_tl
       }
   }
+
+\cs_new:Nn \obj_show:n
+  {
+    \prop_show:c { g__obj_#1_spec_prop }
+    \prop_show:c { g__obj_#1_proto_prop }
+  }
