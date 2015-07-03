@@ -35,8 +35,7 @@
         \__obj_new_setter:nV {#1} \l_parse_dictionary_key_tl
       }
     \cs_set_eq:cN { #1_new:N } \prop_new:N
-    \cs_new:cn { #1_set:Nn }
-      { \__obj_set:nNn {#1} ##1 {##2} }
+    \cs_new:cpn { #1_set:Nn } { \__obj_set:nNn {#1} }
     \cs_new:cn { #1_new:Nn }
       {
         \use:c { #1_new:N  } ##1
