@@ -1,0 +1,36 @@
+\nonstopmode \input expl3-generic \relax \ExplSyntaxOn % -*- expl3 -*-
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\file_input:n { obj }
+
+\obj_new:nn { ball }
+  {
+    bounce-factor: int = 4,
+    name: tl,
+    color: color = blue,
+  }
+
+\ball_new:Nn \l_my_ball
+  {
+    name = hello,
+    color = red,
+  }
+
+\exp_args:No \msg_term:n { \ball_name:N \l_my_ball }
+
+\prop_show:N \l_my_ball
+
+\cs_new:Nn \obj_show:n
+  {
+    \prop_show:c { g__obj_#1_spec_prop }
+    \prop_show:c { g__obj_#1_proto_prop }
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\ball_new:N \g_some_ball
+
+\obj_show:n { ball }
+
+\bye
