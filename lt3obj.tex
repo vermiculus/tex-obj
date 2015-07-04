@@ -4,6 +4,10 @@
 
 \file_input:n { obj }
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\msg_term:n { Testing~ball... }
+
 \obj_new:nn { ball }
   {
     bounce-factor: int = 4,
@@ -24,6 +28,19 @@
 \exp_args:No \msg_term:n { \ball_name:N \l_my_ball }
 
 \ball_show:N \l_my_ball
+
+\msg_term:n { Testing~ball...complete. }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\msg_term:n { Testing~baseball... }
+
+\obj_new:nn { ball / baseball }
+  { games-won: int }
+
+\obj_show:n { baseball }
+
+\msg_term:n { Testing~baseball...complete. }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
