@@ -2,7 +2,26 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\file_input:n { obj }
+\file_input:n { obj2 }
+
+\obj_new:nn { rectangle }
+  {
+    size: int = 2,
+    name: tl,
+  }
+
+\rectangle_new:Nn \l_my_rect
+  { name = bill }
+\prop_show:N \l_my_rect
+
+\exp_args:No \msg_term:n { name=\rectangle_get:Nn \l_my_rect {name} }
+
+\rectangle_set:Nn \l_my_rect { name = bob, other=hi }
+
+\exp_args:No \msg_term:n { name=\rectangle_get:Nn \l_my_rect {name} }
+\obj_show:n { rectangle }
+
+\msg_term:n {BEGIN-BEGIN}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -19,8 +38,6 @@
 
 \obj_show:n { ball }
 
-\bye
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \msg_term:n { Creating~a~ball... }
@@ -33,20 +50,21 @@
 
 \msg_term:n { ?~a~ball... }
 
-\exp_args:No \msg_term:n { \ball_name:N \l_my_ball }
+\exp_args:No \msg_term:n { \ball_get:Nn \l_my_ball { name } }
 
 \ball_show:N \l_my_ball
 
 \msg_term:n { Testing~ball...complete. }
-
-\bye
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \msg_term:n { Testing~baseball... }
 
 \obj_new:nn { ball / baseball }
-  { games-won: int }
+  {
+    games-won: int = 0,
+    stiches: int,
+  }
 
 \obj_show:n { baseball }
 

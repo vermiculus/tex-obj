@@ -12,14 +12,27 @@
 \msg_new:nnn { obj } { unknown-field }
   { The~field~you~have~provided~is~not~known~to~exist~for~this~object:~`#1'.`#2' }
 
-\cs_new:Nn \__obj_new:nn     { \prop_new:c         { g__obj_#1_#2_prop } }
-\cs_new:Nn \__obj_set_eq:nnn { \prop_set_eq:cc     { g__obj_#1_#3_prop } { g__obj_#2_#3_prop } }
-\cs_new:Nn \__obj_add:nnnn   { \prop_put:cnn       { g__obj_#1_#2_prop } {#3} {#4} }
-\cs_new:Nn \__obj_map:nnn    { \prop_map_inline:cn { g__obj_#1_#2_prop } {#3} }
-\cs_generate_variant:Nn \__obj_new:nn { Vn }
-\cs_generate_variant:Nn \__obj_set_eq:nnn { VVn }
+\cs_new:Nn  \__obj_new:nn             { \prop_new:c         { g__obj_#1_#2_prop } }
+\cs_new:Nn  \__obj_set_eq:nnn         { \prop_set_eq:cc     { g__obj_#1_#3_prop } { g__obj_#2_#3_prop } }
+\cs_new:Nn  \__obj_add:nnnn           { \prop_put:cnn       { g__obj_#1_#2_prop } {#3} {#4} }
+\cs_new:Nn  \__obj_map:nnn            { \prop_map_inline:cn { g__obj_#1_#2_prop } {#3} }
+\cs_new:Nn  \__obj_cs_new:nnn         { \cs_new:cn          { #1_#2 } {#3} }
+\cs_new:Npn \__obj_cs_new:nnpn #1#2#3 { \cs_new:cpn         { #1_#2 } #3 }
+\cs_new:Nn  \__obj_cs_set_eq:nnN      { \cs_set_eq:cN       { #1_#2 } #3 }
+\cs_new:Nn  \__obj_cs_use:nn          { \use:c              { #1_#2 } }
+\prg_new_conditional:Nnn \__obj_if_in:nnn { F } { \prop_if_in_p:cn { g__obj_#1_#2_prop } {#3} }
+\cs_generate_variant:Nn \__obj_new:nn { V }
+\cs_generate_variant:Nn \__obj_cs_use:nn { V }
+\cs_generate_variant:Nn \__obj_cs_new:nnn { V }
+\cs_generate_variant:Nn \__obj_cs_new:nnpn { V }
+\cs_generate_variant:Nn \__obj_cs_set_eq:nnN { V }
+\cs_generate_variant:Nn \__obj_set_eq:nnn { VV }
 \cs_generate_variant:Nn \__obj_add:nnnn { VnVV }
-\cs_generate_variant:Nn \__obj_map:nnn { Vnn }
+\cs_generate_variant:Nn \__obj_map:nnn { V }
+\cs_generate_variant:Nn \__obj_if_in:nnnF { nnV }
+
+\cs_new:Nn \obj_method:nnn
+  { \cs_new:cn { #1_#2 } {#3} }
 
 \tl_new:N \l__obj_class_name_tl
 \tl_new:N \l__obj_superclass_name_tl
@@ -37,7 +50,7 @@
         \__obj_set_eq:VVn \l__obj_class_name_tl \l__obj_superclass_name_tl { spec }
         \__obj_set_eq:VVn \l__obj_class_name_tl \l__obj_superclass_name_tl { proto }
       }
-
+    
     \parse_dictionary:nn {#2}
       {
         \clist_if_in:NVF
@@ -56,14 +69,19 @@
         \__obj_new_getter:VV \l__obj_class_name_tl \l_parse_dictionary_key_tl
         \__obj_new_setter:VV \l__obj_class_name_tl \l_parse_dictionary_key_tl
       }
-    \cs_set_eq:cN { \tl_use:N \l__obj_class_name_tl _new:N } \prop_new:N
-    \cs_set_eq:cN { \tl_use:N \l__obj_class_name_tl _show:N } \prop_show:N
-    \cs_set_eq:cN { \tl_use:N \l__obj_class_name_tl _get:Nn } \prop_item:Nn
-    \cs_new:cpn { \tl_use:N \l__obj_class_name_tl _set:Nn } { \__obj_set:nNn { \tl_use:N \l__obj_class_name_tl } }
-    \cs_new:cn { \tl_use:N \l__obj_class_name_tl _new:Nn }
+    \__obj_cs_set_eq:VnN \l__obj_class_name_tl { new:N } \prop_new:N
+    \__obj_cs_set_eq:VnN \l__obj_class_name_tl { get:Nn } \prop_item:Nn
+
+    \__obj_cs_new:Vnpn \l__obj_class_name_tl { set:Nn }
+      { \__obj_set:VNn \l__obj_class_name_tl }
+    \__obj_cs_new:Vnn  \l__obj_class_name_tl { new:Nn }
       {
-        \use:c { \tl_use:N \l__obj_class_name_tl _new:N  } ##1
-        \use:c { \tl_use:N \l__obj_class_name_tl _set:Nn } ##1 {##2}
+%        \__obj_cs_use:Vn \l__obj_class_name_tl { new:N  } ##1
+%        \use:c { \tl_use:N \l__obj_class_name_tl _new:N  } ##1
+        \tl_show:n{##1}
+        \prop_new:N ##1
+        \msg_term:n{here}
+        \__obj_cs_use:Vn \l__obj_class_name_tl { set:Nn } ##1 {##2}
         \__obj_map:Vnn \l__obj_class_name_tl { proto }
           { \prop_put_if_new:Nnn ##1 {####1} {####2} }
       }
@@ -80,14 +98,15 @@
   {
     \parse_prop:nn {#3}
       {
-        \prop_if_in:cVF { g__obj_#1_spec_prop } \l_parse_prop_key_tl
+        \__obj_if_in:nnVF {#1} { spec } \l_parse_prop_key_tl
           {
-            \msg_error:nnnx { obj } { unknown-field } {#1}
+            \msg_error:nnxx { obj } { unknown-field } {#1}
               { \tl_use:N \l_parse_prop_key_tl }
           }
         \prop_put:NVV #2 \l_parse_prop_key_tl \l_parse_prop_value_tl
       }
   }
+\cs_generate_variant:Nn \__obj_set:nNn { V }
 
 \cs_new:Nn \obj_show:n
   {
