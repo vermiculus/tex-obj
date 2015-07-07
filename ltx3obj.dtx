@@ -1,0 +1,230 @@
+% \iffalse meta-comment
+%
+%% File: ltx3obj.dtx Copyright (C) 2013-2013 Sean Allred
+%%
+%% It may be distributed and/or modified under the conditions of the
+%% LaTeX Project Public License (LPPL), either version 1.3c of this
+%% license or (at your option) any later version.  The latest version
+%% of this license is in the file
+%%
+%%    http://www.latex-project.org/lppl.txt
+%%
+%<*driver|package>
+\RequirePackage{l3bootstrap}
+\GetIdInfo$Id$
+  {Boxes with Properties}
+%</driver|package>
+%<*driver>
+\documentclass[full]{l3doc}
+\usepackage{nth,tikz}
+\usetikzlibrary{uml}
+\begin{document}
+  \DocInput{\jobname.dtx}
+\end{document}
+%</driver>
+% \fi
+% \newcommand{\pkgname}{ltx3obj}
+% \title{^^A
+%   The \pkg{\pkgname} package\\ An Object-Oriented System for \LaTeX3^^A
+%   \thanks{This file describes v0, ^^A\ExplFileVersion,
+%      last revised August \nth{15}, 2013.}^^A\ExplFileDate.}^^A
+% }
+%
+% \author{^^A
+%  Sean Allred\thanks
+%    {^^A
+%      E-mail:
+%        \href{mailto:seallred@smcm.edu}
+%          {seallred@smcm.edu}^^A
+%    }^^A
+% }
+%
+% \date{Released 2013/08/15\\[1ex]This is not an official \LaTeX3 package.}^^A\ExplFileDate}
+%
+% \maketitle
+%
+% \begin{documentation}
+% One of the major struggles facing
+%   the contributing developers of \LaTeX\ packages is
+%   the \emph{absolutely foreign} language syntax and behaviour.
+% I can't help most of that,
+%   but \LaTeX3 will hopefully be making it
+%   a fair bit less mind-bendy.
+% Still, a language constructed entirely around
+%   the idea of a \emph{control sequence} is foreign to most developers
+%   (if not all of those who are not in-the-know).
+% Thus, I present \pkg{\pkgname},
+%   a package that aspires to implement object-orientism in \LaTeX\
+%   both at the programming level.
+% 
+%   \begin{tikzpicture}
+%     
+%   \end{tikzpicture}
+%
+% \section{Introduction}
+% I realize many aspiring \LaTeX\ package developers
+%   may not be `in-the-know' about what object-orientism really is.
+% Thus, I will attempt to explain it concisely for the attentive reader,
+%   and defer you to many online resources for deeper explanations.
+% 
+% Object-orientism is that paradigm in
+%   computer programming and systems design where
+%   every element of the program is perceived to have
+%   state and function.
+% It is a system by which you can look at things like \pkg{l3seq}
+%   and create \emph{new} data structures with associated abilities.
+% It is a means by which you can create and maintain a \texttt{circle} object,
+%   give it properties, give it abilities, and give it uses.\footnote{That is, a \texttt{circle} could be a property of another class.}
+% 
+% \section{Document-Level Use}
+% \subsection{Data Structures}
+% We will work through this package as most early languages worked through their own time.
+% Through \TeX\ we have data (via macros) and
+%   through \LaTeX3 we have a certain set of \emph{data structures}.\footnote{^^A
+% Briefly, a \emph{data structure} is what we call
+%   a collection of different pieces of data that
+%   have cohesive meaning or value when grouped together and taken as a whole.}
+% Wouldn't it be nice to have your \emph{own} data structure?
+% \begin{function}[updated = 2013/08/16]{\NewDataStructureSpecification}
+%   \begin{syntax}
+%     \cs{NewDataStructureSpecification} \oarg{superstructure name} \marg{structure name} \marg{property specification}
+%   \end{syntax}
+%   Declares a new data structure. ^^A \prop_new:N \g_@@_Class_ClassName
+%   \meta{superstructure name} is another \emph{defined} data structure name (as was given in its own \meta{structure name}).
+%
+%   This creates a \pkg{l3prop} property list of the form \cs{g_@@_ds_\meta{class name}__properties_prop} to hold something like the following:
+% \begin{verbatim}
+%                color = default,
+%   some_base_property = values,
+% some_object_property = here
+% \end{verbatim}
+%   Note that this continues the \LaTeX3 trend of `it all depends on interpretation.'
+%   There is only one real type for any given property, and that's the token list.
+%   It is the methods of your object which will do the interpreting.
+% \end{function}
+
+% \begin{function}[updated = 2013/08/15]{\NewClass}
+%   \begin{syntax}
+%     \cs{NewClass} \oarg{superclass name} \marg{data structure name} \marg{class name} \marg{functions}
+%   \end{syntax}
+% \begin{verbatim}
+% \NewClass { shape } { Shape } {
+%   print:N = {
+%     The object is
+%     ##1 % is always the object
+%    },
+%   
+%   print_qualities:N = {
+%     % \shape_get/set family from data structure
+%     The object has size \shape_get_size:N { ##1 }
+%    }
+% }
+% \end{verbatim}
+% \end{function}
+
+% \begin{function}[updated = 2013/08/11]{\NewObject}
+%   \begin{syntax}
+%     \cs{NewObject} \marg{class name} \marg{handler} \oarg{property specification}
+%   \end{syntax}
+%   Creates an object of type \meta{class name} with the handler \meta{handler} and optionally its properties.
+% \end{function}
+
+% \begin{function}[updated = 2013/08/11]{\SetObject}
+%   \begin{syntax}
+%     \cs{SetObjectProperties} \marg{handler} \marg{property specification}
+%   \end{syntax}
+%   Sets specific properties for \meta{handler}.
+%   It is a type error if those properties do not exist.
+% \end{function}
+
+% \end{documentation}
+
+
+
+
+% \begin{implementation}
+%
+% \section{\pkg{propbox} implementation}
+
+%    \begin{macrocode}
+%<*initex|package>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+%<@@=propbox>
+%    \end{macrocode}
+
+%    \begin{macrocode}
+%<*package>
+\ProvidesExplPackage
+  {\ExplFileName}{\ExplFileDate}{\ExplFileVersion}{\ExplFileDescription}
+\__expl_package_check:
+%</package>
+%    \end{macrocode}
+
+% Believe it or not, this is on my computer at work.
+% I forgot to turn Dropbox on.
+% (This is before I made the \texttt{git} repository, of course.)
+
+%    \begin{macrocode}
+  { % Create a new class called Shape
+    \NewClass{Shape}
+  
+    \prop_new:c \g_@@_Class__Shape
+  }
+  
+  \def\@@_add_class_prop:w #1.#2 #3..{\prop_add:Nnn { #1 } { #2 } { #3 }}
+  
+  { % Set its properties
+    \SetClassProperties{Shape}{
+      .color tl,
+      .parent \ReferenceClass{Shape}
+    }
+  
+    \clist_set:Nn \l_tmpa_clist { #2 }
+    \clist_map:Nn \l_tmpa_clist {
+      \@@_add_class_prop:w { g_@@_Class__Shape } ##1..
+    }
+  }
+  
+  { % Create a new subclass Ball(Shape) with properties
+    \NewClass[Shape]{Ball}[
+    .radius int
+    ]
+  
+    \prop_new:c { g_@@_Class__Ball }
+    \prop_set_eq:NN \g_@@_Class__Ball \g_@@_Class.Shape
+  
+    \clist_set:Nn \l_tmpa_clist { #2 }
+    \clist_map:Nn \l_tmpa_clist {
+      \@@_add_class_prop:w { g_@@_Class.Ball } ##1..
+    }
+  }
+  
+  { % Create a new Shape called myShape
+    \NewObject{Shape}{myShape}
+    % and set its properties; note the undefined \ClassReference should have a -NoValue- marker
+    \SetObjectProperties{myShape}{
+      color = blue,
+    }
+  
+    \prop_new:N \g_@@_Object__myShape
+    
+  }
+  
+  { % Create a new Ball called myBall and set its properties
+    \NewObject{Ball}{myBall}[
+    color = purple with a hint of orange,
+    radius = 5
+    parent = \ReferenceObject{myShape}
+    ]
+  }
+  
+  \UseObjectProperty{myBall.color}
+  \SetObjectProperty{myBall.parent}{\ReferenceObject{myShape}}
+
+%    \end{macrocode}
+
+% \end{implementation}
+%
+% \PrintIndex

@@ -1,0 +1,5 @@
+*
+!.gitignore
+!ltx3obj.dtx
+!ltx3obj.pdf
+!test.tex
