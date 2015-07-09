@@ -1,7 +1,11 @@
 tex-obj
 ======
 
-An implementation of the object-oriented paradigm for `expl3` of the LaTeX3 project.
+An implementation of the object-oriented paradigm for `expl3` of the
+LaTeX3 project.
+
+The typeset documentation is available [here][pdfdoc] pending
+discussions on exactly what to do with this idea.
 
 ```tex
 \nonstopmode \input expl3-generic \relax \ExplSyntaxOn % -*- expl3 -*-
@@ -43,3 +47,5 @@ An implementation of the object-oriented paradigm for `expl3` of the LaTeX3 proj
 
 \bye
 ```
+
+[pdfdoc]: http://www.seanallred.com/assets/tex-obj.pdf
