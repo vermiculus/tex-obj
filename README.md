@@ -33,12 +33,12 @@ An implementation of the object-oriented paradigm for `expl3` of the LaTeX3 proj
 \obj_method:nnn { rectangle } { get_field:NnN }
   { \obj_this:nN {#2} #3 }
 
-    \msg_term:n { Expect:~`\string\obj_this:n'~definition }
+    \msg_term:n { Expect:~ `\string\obj_this:n'~definition }
     \cs_show:N \rectangle_get_field:NnN
 
 \rectangle_get_field:NnN \l_demo_rhombus { fill-color } \l_tmpa_tl
 
-    \msg_term:n { Expect:~white }
+    \msg_term:n { Expect:~ white }
     \tl_show:N \l_tmpa_tl
 
 \bye
