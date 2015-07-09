@@ -2,7 +2,7 @@ PACKAGE = obj
 TRASH := ./.trash-$(shell date -j -f "%a %b %d %T %Z %Y" "`date`" "+%s")
 CRUFT := $(addprefix $(PACKAGE).,aux glo hd idx log out toc) README $(PACKAGE)-demo.log
 
-.PHONY: clean all ctan test
+.PHONY: clean hard-clean all ctan test
 
 all: clean ctan
 	$(info Complete!)
