@@ -2,32 +2,6 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\iffalse
-% include in generate_variant for N->n?
-\cs_new:Npn \__tl_make_bare_func:NN #1#2
-  {
-    \cs_new:Npn #2 ##1
-      {
-        \tl_set:Nn \l__tl_tmp_tl {##1}
-        #1 \l__tl_tmp_tl
-      }
-  }
-
-\cs_generate_variant:Nn \prop_get:NnN {o}
-
-\prop_put:Nnn \l_tmpa_prop {key} {value}
-\seq_push:NV \l_tmpa_seq \l_tmpa_prop
-
-\prop_get:onN { \seq_item:Nn \l_tmpa_seq {1} } {key} \l_tmpa_tl
-\tl_show:N \l_tmpa_tl
-
-\seq_show:N \l_tmpa_seq
-
-%\__tl_make_bare_func:NN \prop_get:Nn \prop_get:nn
-
-%\bye
-\fi
-
 \file_input:n { obj }
 
 \obj_new:nn { rectangle }
@@ -44,85 +18,16 @@
     length = 4,
     stroke-color = gray,
   }
+\msg_term:n { Expect:~ elements~of~`rectangle'~and~`rhombus' }
 \rhombus_show:N \l_demo_rhombus
 
 \obj_method:nnn { rectangle } { get_field:NnN }
-  {
-    \obj_this:nN {#2} #3
-%    \obj_scope:nn { #2 = #3 } {#3}
-%    \obj_scope:nn { field = \l_tmpa_tl,
-%                    color = \l_tmpa_color }
-%      {
-%        Something~using~\l_tmpa_tl
-%      }
-  }
+  { \obj_this:nN {#2} #3 }
+\msg_term:n { Expect:~`\string\obj_this:n'~definition }
 \cs_show:N \rectangle_get_field:NnN
 
 \rectangle_get_field:NnN \l_demo_rhombus { fill-color } \l_tmpa_tl
+\msg_term:n { Expect:~white }
 \tl_show:N \l_tmpa_tl
-
-\bye
-
-\obj_new:nn { rectangle }
-  {
-    size: int = 2,
-    name: tl,
-  }
-
-\rectangle_new:Nn \l_my_rect
-  { name = bill }
-\rectangle_show:N \l_my_rect
-
-\exp_args:No \msg_term:n { name=\rectangle_get:Nn \l_my_rect {name} }
-
-\rectangle_set:Nn \l_my_rect { name = bob, other=hi }
-
-\exp_args:No \msg_term:n { name=\rectangle_get:Nn \l_my_rect {name} }
-\obj_show:n { rectangle }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\msg_term:n { Testing~ball... }
-
-\obj_new:nn { ball }
-  {
-    bounce-factor: int = 4,
-    name: tl,
-    color: color = blue,
-  }
-
-\obj_show:n { ball }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\msg_term:n { Creating~a~ball... }
-
-\ball_new:Nn \l_my_ball
-  {
-    name = hello,
-    color = red,
-  }
-
-\exp_args:No \msg_term:n { \ball_get:Nn \l_my_ball { name } }
-
-\ball_show:N \l_my_ball
-
-\msg_term:n { Testing~ball...complete. }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\msg_term:n { Testing~baseball... }
-
-\obj_new:nn { ball / baseball }
-  {
-    games-won: int = 0,
-    stiches: int,
-  }
-
-\obj_show:n { baseball }
-
-\msg_term:n { Testing~baseball...complete. }
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \bye
