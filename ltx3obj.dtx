@@ -1,230 +1,493 @@
 % \iffalse meta-comment
+% arara: clean: { files: [ obj.aux, obj.glo, obj.hd, obj.idx, obj.ilg, obj.ind, obj.out ] }
+% arara: make: { task: "obj.tex" }
+% arara: pdflatex
+% arara: makeindex: { style: gind.ist, options: "-o obj.ind" }
+% arara: pdflatex
+% arara: pdflatex
 %
-%% File: ltx3obj.dtx Copyright (C) 2013-2013 Sean Allred
 %%
-%% It may be distributed and/or modified under the conditions of the
-%% LaTeX Project Public License (LPPL), either version 1.3c of this
-%% license or (at your option) any later version.  The latest version
-%% of this license is in the file
+%% File: obj.dtx Copyright(C) 2015 Sean Allred
+%%
+%% obj.dtx may be distributed and/or modified under the
+%% conditions of the LaTeX Project Public License (LPPL),
+%% either version 1.3c of this license or (at your option)
+%% any later version.  The latest version of this license is
+%% in the file
 %%
 %%    http://www.latex-project.org/lppl.txt
 %%
-%<*driver|package>
-\RequirePackage{l3bootstrap}
-\GetIdInfo$Id$
-  {Boxes with Properties}
-%</driver|package>
+%% The released version is available from CTAN.
+%%
+%% -----------------------------------------------------------------------
+%%
+%% The development version can be found at
+%%
+%%    http://www.github.com/vermiculus/lt3obj
+%%
+%% for those people who are interested.
+%%
+%% -----------------------------------------------------------------------
+%%
+%
 %<*driver>
 \documentclass[full]{l3doc}
-\usepackage{nth,tikz}
-\usetikzlibrary{uml}
+\def\ExplFileName{obj}
+\def\ExplFileVersion{0.2}
+\def\ExplFileDate{2015-07-06}
+\def\ExplFileDescription{Objects for \pkg{expl3}}
+\def\ExplFileExtension{dtx}
 \begin{document}
-  \DocInput{\jobname.dtx}
+\renewcommand\partname{Part}
+\DoNotIndex{\g_demo_rect}
+\DocInput{\jobname.dtx}
 \end{document}
 %</driver>
 % \fi
-% \newcommand{\pkgname}{ltx3obj}
+%
 % \title{^^A
-%   The \pkg{\pkgname} package\\ An Object-Oriented System for \LaTeX3^^A
-%   \thanks{This file describes v0, ^^A\ExplFileVersion,
-%      last revised August \nth{15}, 2013.}^^A\ExplFileDate.}^^A
+%   The \pkg{obj} module \\ Objects for \pkg{expl3}^^A
+%   \thanks{This file describes v\ExplFileVersion,
+%     last revised \ExplFileDate.}^^A
 % }
 %
 % \author{^^A
 %  Sean Allred\thanks
 %    {^^A
 %      E-mail:
-%        \href{mailto:seallred@smcm.edu}
-%          {seallred@smcm.edu}^^A
+%        \href{mailto:tex@seanallred.com}
+%          {tex@seanallred.com}^^A
 %    }^^A
 % }
 %
-% \date{Released 2013/08/15\\[1ex]This is not an official \LaTeX3 package.}^^A\ExplFileDate}
+% \date{Released \ExplFileDate}
 %
 % \maketitle
 %
 % \begin{documentation}
-% One of the major struggles facing
-%   the contributing developers of \LaTeX\ packages is
-%   the \emph{absolutely foreign} language syntax and behaviour.
-% I can't help most of that,
-%   but \LaTeX3 will hopefully be making it
-%   a fair bit less mind-bendy.
-% Still, a language constructed entirely around
-%   the idea of a \emph{control sequence} is foreign to most developers
-%   (if not all of those who are not in-the-know).
-% Thus, I present \pkg{\pkgname},
-%   a package that aspires to implement object-orientism in \LaTeX\
-%   both at the programming level.
-% 
-%   \begin{tikzpicture}
-%     
-%   \end{tikzpicture}
 %
-% \section{Introduction}
-% I realize many aspiring \LaTeX\ package developers
-%   may not be `in-the-know' about what object-orientism really is.
-% Thus, I will attempt to explain it concisely for the attentive reader,
-%   and defer you to many online resources for deeper explanations.
-% 
-% Object-orientism is that paradigm in
-%   computer programming and systems design where
-%   every element of the program is perceived to have
-%   state and function.
-% It is a system by which you can look at things like \pkg{l3seq}
-%   and create \emph{new} data structures with associated abilities.
-% It is a means by which you can create and maintain a \texttt{circle} object,
-%   give it properties, give it abilities, and give it uses.\footnote{That is, a \texttt{circle} could be a property of another class.}
-% 
-% \section{Document-Level Use}
-% \subsection{Data Structures}
-% We will work through this package as most early languages worked through their own time.
-% Through \TeX\ we have data (via macros) and
-%   through \LaTeX3 we have a certain set of \emph{data structures}.\footnote{^^A
-% Briefly, a \emph{data structure} is what we call
-%   a collection of different pieces of data that
-%   have cohesive meaning or value when grouped together and taken as a whole.}
-% Wouldn't it be nice to have your \emph{own} data structure?
-% \begin{function}[updated = 2013/08/16]{\NewDataStructureSpecification}
-%   \begin{syntax}
-%     \cs{NewDataStructureSpecification} \oarg{superstructure name} \marg{structure name} \marg{property specification}
-%   \end{syntax}
-%   Declares a new data structure. ^^A \prop_new:N \g_@@_Class_ClassName
-%   \meta{superstructure name} is another \emph{defined} data structure name (as was given in its own \meta{structure name}).
+%   This module provides simple support for objects in \pkg{expl3}.
 %
-%   This creates a \pkg{l3prop} property list of the form \cs{g_@@_ds_\meta{class name}__properties_prop} to hold something like the following:
-% \begin{verbatim}
-%                color = default,
-%   some_base_property = values,
-% some_object_property = here
-% \end{verbatim}
-%   Note that this continues the \LaTeX3 trend of `it all depends on interpretation.'
-%   There is only one real type for any given property, and that's the token list.
-%   It is the methods of your object which will do the interpreting.
-% \end{function}
-
-% \begin{function}[updated = 2013/08/15]{\NewClass}
+%   \paragraph{Example of use}
+%    \begin{verbatim}
+% \obj_new:nn { rectangle }
+%   {
+%     length: int,
+%     width: int,
+%     stroke-color: color = black,
+%     fill-color: color = white
+%   }
+% \obj_new:nn { rectangle / rhombus }
+%   { angle: int = 45 }
+% \rhombus_new:Nn \l_demo_rhombus
+%   {
+%     length = 4,
+%     stroke-color = gray,
+%   }
+% \rhombus_show:N \l_demo_rhombus
+%    \end{verbatim}
+%    \hrule
+%    \begin{verbatim}
+% The property list \l_demo_rhombus contains the pairs [...]:
+% >  {length}  =>  {4}
+% >  {width}  =>  {}
+% >  {stroke-color}  =>  {gray}
+% >  {fill-color}  =>  {white}
+% >  {angle}  =>  {45}.
+%    \end{verbatim}
+% \newpage
+% \tableofcontents
+% \section*{Introduction}
+%
+% Object-orientism is a well-known paradigm in computer programming.  Simply
+% put, it is a way of thinking about programs that perceives its logic to be
+% manipulating `objects': setting and retrieving properties of any given object
+% and using them to drive the program.
+%
+% Implementing this in \TeX\ is a challenge made much easier with \pkg{expl3}.
+% By cleverly using property lists, classes and objects can be simply realized
+% without much trouble.  This implementation supports data types, defaults, and
+% method creation (as well as the plumbing of instantiation\slash population).
+%
+% \newpage
+%
+% \part{Interface Documentation}
+%
+% \begin{function}[added = 2015-07-08]{\obj_new:nn}
 %   \begin{syntax}
-%     \cs{NewClass} \oarg{superclass name} \marg{data structure name} \marg{class name} \marg{functions}
+%     \cs{obj_new:nn} \Arg{class-name} \Arg{specification}
 %   \end{syntax}
-% \begin{verbatim}
-% \NewClass { shape } { Shape } {
-%   print:N = {
-%     The object is
-%     ##1 % is always the object
-%    },
-%   
-%   print_qualities:N = {
-%     % \shape_get/set family from data structure
-%     The object has size \shape_get_size:N { ##1 }
-%    }
-% }
-% \end{verbatim}
 % \end{function}
-
-% \begin{function}[updated = 2013/08/11]{\NewObject}
+%
+% \begin{function}[added = 2015-07-08]{\obj_show:n}
 %   \begin{syntax}
-%     \cs{NewObject} \marg{class name} \marg{handler} \oarg{property specification}
+%     \cs{obj_show:n} \Arg{class-name}
 %   \end{syntax}
-%   Creates an object of type \meta{class name} with the handler \meta{handler} and optionally its properties.
 % \end{function}
-
-% \begin{function}[updated = 2013/08/11]{\SetObject}
+%
+% \begin{function}[added = 2015-07-08]{\obj_method:nnn}
 %   \begin{syntax}
-%     \cs{SetObjectProperties} \marg{handler} \marg{property specification}
+%     \cs{obj_method:nnn} \Arg{class-name} \Arg{method-name} \Arg{implementation}
 %   \end{syntax}
-%   Sets specific properties for \meta{handler}.
-%   It is a type error if those properties do not exist.
 % \end{function}
-
+%
+% \begin{function}[added = 2015-07-08]{\obj_this:nN}
+%   \begin{syntax}
+%     \cs{obj_this:nN} \Arg{field-name} \meta{destination-var}
+%   \end{syntax}
+%   Created dynamically by \cs{obj_method:nnn},
+% \end{function}
+%
+% \begin{function}[added = 2015-07-08]{\obj_use_method:nn}
+%   \begin{syntax}
+%     \cs{obj_use_method:nn} \Arg{class-name} \Arg{method-name}
+%   \end{syntax}
+% \end{function}
+%
+% \begin{variable}[added = 2015-07-08]{\g__obj_types_clist}
+%   The list of types known to \pkg{obj}.  By default, the `primitive' types of
+%   expl3 are available.  Not much is done with this value, currently.
+%   Eventually, it will be used to automatically instantiate fields.  (A
+%   corresponding `no-instantiate' list will also need to be maintained; e.g.,
+%   it doesn't make sense to create an `onject' field.)
+% \end{variable}
+%
+%
+% \newpage
+%
+% \part{Examples}
+%
 % \end{documentation}
-
-
-
-
-% \begin{implementation}
 %
-% \section{\pkg{propbox} implementation}
-
-%    \begin{macrocode}
-%<*initex|package>
-%    \end{macrocode}
-
-%    \begin{macrocode}
-%<@@=propbox>
-%    \end{macrocode}
-
+% \newpage
+%
+% \part{Implementation}
+%
+% Before I begin, I want to establish a few definitions:
+% \begin{description}
+% \item[object] A complex collection of data with defined behavior.  These are
+%   also called instantiations.
+% \item[class] A definition of (or blueprint for) a kind of object.  Often
+%   used interchangeably with `type'.
+% \item[super-class, sub-class] ***
+% \item[method] A function designed to work with a particular class of objects.
+% \item[field] A piece of data that belongs to an object.
+% \end{description}
+%
+% \begin{implementation}
 %    \begin{macrocode}
 %<*package>
-\ProvidesExplPackage
-  {\ExplFileName}{\ExplFileDate}{\ExplFileVersion}{\ExplFileDescription}
-\__expl_package_check:
+%<@@=obj>
+%    \end{macrocode}
+% \section{Dependencies}
+% This module depends on \pkg{parsing}.  It is included with this documentation,
+% but is not documented itself.  Its status is still in limbo (much like this
+% module, but less so).
+%    \begin{macrocode}
+\file_input:n { parsing }
+%    \end{macrocode}
+% \section{Creating classes}
+%
+% Classes are implemented as a pair of property lists:
+% \begin{description}
+% \item[specification] A mapping of fields to types.
+% \item[prototype] A mapping of fields to default values.
+% \end{description}
+% These property lists are both stored in a sequence of the form
+% |\g__obj_spec_?_seq|, where |?| is the class name.  This sequence will only
+% ever have two items: the specification is on the left while the prototype is
+% on the right.
+%
+% They were collected into one sequence to keep the namespace free of clutter
+% and to ease confusion during the development of this package, but storing the
+% property lists `naked' in their own variables would be faster.
+%
+% \begin{macro}{\obj_new:nn}
+%   When a new class is defined, several actions have to take place:
+%   \begin{itemize}
+%   \item The specification and the prototype must be created.  (These must obey
+%     any inheritence specified.)
+%   \item Each field must be processed and added to the specification and
+%     prototype as appropriate.
+%   \item Certain plumbing methods must be created to instantiate objects and
+%     set\slash retrieve the data in their fields.
+%   \end{itemize}
+%   For ease of reading, these parts have been split up.  In a maintenance
+%   release, these different pieces will be merged together.  For this first
+%   release though, it is much easier to take advantage of
+%   \cs{cs_generate_variant:Nn} to simplify the code for review.
+%    \begin{macrocode}
+\tl_new:N \l_@@_class_name_tl
+\cs_new:Nn \obj_new:nn
+  {
+    \@@_define:nnN {#1} {#2} \l_@@_class_name_tl
+    \@@_process_fields:Vn \l_@@_class_name_tl {#2}
+    \@@_make_metas:V \l_@@_class_name_tl
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}[aux]{\@@_define:nnN}
+%   \begin{syntax}
+%     \cs{__obj_define:nnN} \Arg{name} \Arg{specification} \meta{tl-var}
+%   \end{syntax}
+%   A |name| of the form |{ superclass / class }| is pieced out into
+%   \meta{superclass} and \meta{class}.  \meta{class} is placed into
+%   \meta{tl-var} and \meta{superclass} is placed into \cs{l_@@_tmp_tl}.  If
+%   there is no superclass, \meta{class} is created without inheriting from any
+%   other class (i.e., there is no pre-existing specification or prototype).
+%    \begin{macrocode}
+\prop_new:N \l_@@_spec_prop
+\prop_new:N \l_@@_proto_prop
+\cs_new:Nn \@@_define:nnN
+  {
+    \seq_set_split:Nnn \l_@@_tmp_seq { / } {#1}
+    \seq_pop_right:NN  \l_@@_tmp_seq #3
+    \seq_pop_right:NN  \l_@@_tmp_seq \l_@@_tmp_tl
+    \quark_if_no_value:NTF \l_@@_tmp_tl
+      { \@@_setup:VNN #3 \c_empty_prop \c_empty_prop }
+      {
+%    \end{macrocode}
+%   Otherwise, we grab the superclass's specification and prototype and base our
+%   new object off of it.
+%    \begin{macrocode}
+        \@@_spec:VN      \l_@@_tmp_tl    \l_@@_spec_prop
+        \@@_proto:VN     \l_@@_tmp_tl    \l_@@_proto_prop
+        \@@_setup:VNN #3 \l_@@_spec_prop \l_@@_proto_prop
+%    \end{macrocode}
+%   We have to make sure that defaults for existing fields are updated
+%   correctly.
+%
+%   ^^A \item Is this still necessary?  Isn't this done again in process_fields?
+%   ^^A \item TODO #3 used to be \l_@@_tmp_tl
+%    \begin{macrocode}
+        \@@_proto:VN #3 \l_@@_tmp_prop
+        \parse_dictionary:nn {#2}
+          {
+            \prop_if_in:NVF \l_@@_proto_prop \l_parse_dictionary_key_tl
+              {
+                \prop_put:NVV \l_@@_tmp_prop
+                  \l_parse_dictionary_key_tl
+                  \l_parse_dictionary_value_tl
+              }
+          }
+        \@@_proto:NV \l_@@_tmp_prop \l_@@_tmp_tl
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[aux]{\@@_process_fields:nn}
+%   \begin{syntax}
+%     \cs{__obj_process_fields:nn} \Arg{name} \Arg{specification}
+%   \end{syntax}
+%    \begin{macrocode}
+\cs_new:Nn \@@_process_fields:nn
+  {
+    \parse_dictionary:nn {#2}
+      {
+%    \end{macrocode}
+%   If we don't recognize this type, issue a warning.
+%    \begin{macrocode}
+        \clist_if_in:NVF
+          \g_@@_types_clist
+          \l_parse_dictionary_type_tl
+          {
+            \msg_warning:nnx { @@ } { unknown-type }
+              { \tl_use:N \l_parse_dictionary_type_tl }
+          }
+%    \end{macrocode}
+%   Create the specification property list.
+%    \begin{macrocode}
+        \@@_spec:nN {#1} \l_@@_tmp_prop
+        \prop_put:NVV \l_@@_tmp_prop
+          \l_parse_dictionary_key_tl
+          \l_parse_dictionary_type_tl
+        \@@_spec:Nn \l_@@_tmp_prop {#1}
+%    \end{macrocode}
+%   Create the prototype.
+%    \begin{macrocode}
+        \@@_proto:nN {#1} \l_@@_tmp_prop
+        \prop_put:NVV \l_@@_tmp_prop
+          \l_parse_dictionary_key_tl
+          \l_parse_dictionary_value_tl
+        \@@_proto:Nn \l_@@_tmp_prop {#1}
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[aux]{\@@_make_metas:nn}
+%   \begin{syntax}
+%     \cs{__obj_make_metas:nn} \Arg{name}
+%   \end{syntax}
+%    \begin{macrocode}
+\cs_new:Nn \@@_make_metas:n
+  {
+    \obj_method:nnn {#1} { show:N } { \prop_show:N ##1 }
+%    \end{macrocode}
+%   \begin{syntax}
+%     \cs{?_new:N} \meta{object-var}
+%   \end{syntax}
+%    \begin{macrocode}
+    \obj_method:nnn {#1} { new:N } % { obj-var }
+      {
+        \@@_proto:nN {#1} \l_@@_tmp_prop
+        \prop_set_eq:NN ##1  \l_@@_tmp_prop
+      }
+%    \end{macrocode}
+%   \begin{syntax}
+%     \cs{?_new:Nn} \meta{object-var} \Arg{fields}
+%   \end{syntax}
+%    \begin{macrocode}
+    \obj_method:nnn {#1} { new:Nn } % { obj-var {values} }
+      {
+        \obj_use_method:nn {#1} { new:N } ##1
+        \obj_use_method:nn {#1} { set:Nn } ##1 {##2}
+        % put in defaults
+        \@@_proto:nN {#1} \l_@@_tmp_prop
+        \prop_map_inline:Nn \l_@@_tmp_prop
+          { \prop_put_if_new:Nnn ##1 {####1} {####2} }
+      }
+
+    \obj_method:nnn {#1} { get:Nn } % { obj-var {field} }
+      { \prop_item:Nn ##1 {##2} }
+
+    \obj_method:nnn {#1} { set:Nn }
+      {
+        \prop_clear_new:N ##1
+        \@@_spec:nN {#1} \l_@@_tmp_prop
+        \parse_prop:nn {##2}
+          {
+            \prop_if_in:NVF \l_@@_tmp_prop \l_parse_prop_key_tl
+              {
+                \msg_warning:nnxx { obj } { unknown-field } {#1}
+                  { \tl_use:N \l_parse_prop_key_tl }
+              }
+            \prop_put:NVV ##1 \l_parse_prop_key_tl \l_parse_prop_value_tl
+          }
+      }
+  }
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\obj_show:n}
+%    \begin{macrocode}
+\cs_new:Nn \obj_show:n
+  {
+    \@@_spec:nN {#1} \l_@@_tmp_prop
+    \prop_show:N \l_@@_tmp_prop
+    \@@_proto:nN {#1} \l_@@_tmp_prop
+    \prop_show:N \l_@@_tmp_prop
+  }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}{\obj_method:nnn,\obj_use_method:nn,\obj_this:nN}
+%    \begin{macrocode}
+\cs_new:Nn \obj_method:nnn
+  {
+    \cs_new:cn { #1_#2 }
+      {
+        \cs_set:Nn \obj_this:nN
+          { \prop_get:NnN ##1 {####1} ####2 }
+        #3
+      }
+  }
+\cs_new:Nn \obj_use_method:nn { \use:c { #1_#2 } }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[aux]{\@@_make_getter:nn,\@@_make_getter:nn}
+%    \begin{macrocode}
+\cs_new:Nn \__obj_make_getter:nn
+  { \obj_method:nnn {#1} { #2:N  } { \prop_item:Nn ##1 {#2}       } }
+\cs_new:Nn \__obj_make_setter:nn
+  { \obj_method:nnn {#1} { #2:Nn } { \prop_put:Nnn ##1 {#2} {##2} } }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[aux]{\@@_setup:nNN,\@@_setup:n}
+%    \begin{macrocode}
+\cs_new:Nn \__obj_setup:nNN     % with superclass
+  {                             % { {spec} {proto} }
+    \seq_new:c { g__obj_spec_#1_seq }
+    \seq_put_left:cV  { g__obj_spec_#1_seq } #2
+    \seq_put_right:cV { g__obj_spec_#1_seq } #3
+  }
+\cs_new:Nn \__obj_setup:n       % no superclass
+  { \__obj_setup:nNN {#1} \c_empty_prop \c_empty_prop }
+%    \end{macrocode}
+% \end{macro}
+% \begin{macro}[aux]{\@@_spec:nN,\@@_proto:nN,\@@_spec:Nn,\@@_proto:Nn}
+%    \begin{macrocode}
+\cs_new:Nn \__obj_spec:nN  { \seq_get_left:cN  { g__obj_spec_#1_seq } #2 } % get spec
+\cs_new:Nn \__obj_proto:nN { \seq_get_right:cN { g__obj_spec_#1_seq } #2 } % get proto
+\cs_new:Nn \__obj_spec:Nn       % set spec
+  {
+    \seq_pop_left:cN  { g__obj_spec_#2_seq } \l__obj_tmp_seq
+    \seq_put_left:cV  { g__obj_spec_#2_seq } #1
+  }
+\cs_new:Nn \__obj_proto:Nn      % set proto
+  {
+    \seq_pop_right:cN { g__obj_spec_#2_seq } \l__obj_tmp_seq
+    \seq_put_right:cV { g__obj_spec_#2_seq } #1
+  }
+%    \end{macrocode}
+% \end{macro}
+% \section{Messages}
+%    \begin{macrocode}
+\tl_new:N \l__obj_tmp_tl
+\seq_new:N \l__obj_tmp_seq
+
+\clist_new:N \g__obj_types_clist
+\clist_set:Nn \g__obj_types_clist
+  { obj, tl, seq, int, color }
+
+\msg_new:nnn { obj } { unknown-type }
+  {
+    The~type~you~have~provided~is~not~known~to~exist:~
+    `#1'
+  }
+
+\msg_new:nnn { obj } { unknown-field }
+  {
+    The~field~you~have~provided~is~not~known~to~exist~
+    for~this~object:~`#1.#2'
+  }
+%    \end{macrocode}
+% \section{Variants}
+%    \begin{macrocode}
+\cs_generate_variant:Nn \@@_make_getter:nn    { VV }
+\cs_generate_variant:Nn \@@_make_setter:nn    { VV }
+\cs_generate_variant:Nn \@@_setup:n           { V  }
+\cs_generate_variant:Nn \@@_setup:nNN         { V  }
+\cs_generate_variant:Nn \@@_spec:nN           { V  }
+\cs_generate_variant:Nn \@@_proto:nN          { V  }
+\cs_generate_variant:Nn \@@_spec:Nn           { NV }
+\cs_generate_variant:Nn \@@_proto:Nn          { NV }
+\cs_generate_variant:Nn \@@_process_fields:nn { V  }
+\cs_generate_variant:Nn \@@_make_metas:n      { V  }
+%    \end{macrocode}
+%    \begin{macrocode}
 %</package>
 %    \end{macrocode}
-
-% Believe it or not, this is on my computer at work.
-% I forgot to turn Dropbox on.
-% (This is before I made the \texttt{git} repository, of course.)
-
-%    \begin{macrocode}
-  { % Create a new class called Shape
-    \NewClass{Shape}
-  
-    \prop_new:c \g_@@_Class__Shape
-  }
-  
-  \def\@@_add_class_prop:w #1.#2 #3..{\prop_add:Nnn { #1 } { #2 } { #3 }}
-  
-  { % Set its properties
-    \SetClassProperties{Shape}{
-      .color tl,
-      .parent \ReferenceClass{Shape}
-    }
-  
-    \clist_set:Nn \l_tmpa_clist { #2 }
-    \clist_map:Nn \l_tmpa_clist {
-      \@@_add_class_prop:w { g_@@_Class__Shape } ##1..
-    }
-  }
-  
-  { % Create a new subclass Ball(Shape) with properties
-    \NewClass[Shape]{Ball}[
-    .radius int
-    ]
-  
-    \prop_new:c { g_@@_Class__Ball }
-    \prop_set_eq:NN \g_@@_Class__Ball \g_@@_Class.Shape
-  
-    \clist_set:Nn \l_tmpa_clist { #2 }
-    \clist_map:Nn \l_tmpa_clist {
-      \@@_add_class_prop:w { g_@@_Class.Ball } ##1..
-    }
-  }
-  
-  { % Create a new Shape called myShape
-    \NewObject{Shape}{myShape}
-    % and set its properties; note the undefined \ClassReference should have a -NoValue- marker
-    \SetObjectProperties{myShape}{
-      color = blue,
-    }
-  
-    \prop_new:N \g_@@_Object__myShape
-    
-  }
-  
-  { % Create a new Ball called myBall and set its properties
-    \NewObject{Ball}{myBall}[
-    color = purple with a hint of orange,
-    radius = 5
-    parent = \ReferenceObject{myShape}
-    ]
-  }
-  
-  \UseObjectProperty{myBall.color}
-  \SetObjectProperty{myBall.parent}{\ReferenceObject{myShape}}
-
-%    \end{macrocode}
-
+%
 % \end{implementation}
 %
+% \appendix
+% \section{To-Do}
+% \begin{itemize}
+% \item Support |.|-scoping in \cs{obj_this:nN}:
+% \begin{verbatim}
+% \obj_method:nnn { car } { shiny_rims:N }
+%   { \obj_this:nN { wheel . rim . color } \l_my_rim_color }
+% \end{verbatim}
+% \item Enforce |N|-type as |#1| in |#2| of \cs{obj_method:nnn}. Dynamic
+%   \cs{obj_this:n} creation in \cs{obj_method:nnn} depends on |#1| of the
+%   method being the object itself.
+% \end{itemize}
+%
+% \newpage
+% \section{Complete Example}
+% ^^A\VerbatimInput[firstline=3,gobble=0]{obj-demo}
+%
+%\Finale
+%
+% \PrintChanges
 % \PrintIndex
