@@ -1,0 +1,45 @@
+% -*- expl3 -*-
+\file_input:n { expl3-generic }
+
+\endinput
+
+
+% -*- expl3 -*-
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\RequirePackage{expl3}
+\ProvidesExplPackage
+{lt3obj}
+{2014/08/12}
+{0}
+{Objects for LaTeX3}
+
+\usepackage{lt3graph}
+
+\graph_new:N \g_obj_dependencies_graph
+
+\graph_put_vertex:Nn \g_obj_dependencies_graph { object }
+
+% Declare an object and its base class.  The base class must already exist.  The
+% third argument is a spec taken after xtemplate::\DeclareTemplateInterface.
+\cs_new:Nn \obj_new:nnn {
+  % Ensure object does not already exist.
+  \graph_if_vertex_exist:NnT \g_obj_dependencies_graph { #1 } {
+    \typeout{! ~ Object ~ `#1' ~ already ~ exists! }
+  }
+
+  % Ensure base object exists.
+  \graph_if_vertex_exist:NnF \g_obj_dependencies_graph { #2 } {
+    \typeout{! ~ Base ~ object ~ `#2' ~ does ~ not ~ exist! }
+  }
+  
+  % Make dependency relationship
+  \graph_put_vertex:Nn \g_obj_dependencies_graph { #1 }
+  \graph_put_edge:Nn \g_obj_dependencies_graph { #1 } { #2 }
+
+
+  \clist_set:Nn \l_tmpa_clist { #3 }
+  \clist_map_inline:Nn \l_tmpa_clist {
+    % go through properties definition, creating a property list prototype for
+    % the object.
+  }
+}

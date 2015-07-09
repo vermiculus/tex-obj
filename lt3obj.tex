@@ -1,0 +1,75 @@
+\nonstopmode \input expl3-generic \relax \ExplSyntaxOn % -*- expl3 -*-
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\file_input:n { obj2 }
+
+\obj_new:nn { rectangle }
+  {
+    size: int = 2,
+    name: tl,
+  }
+
+\rectangle_new:Nn \l_my_rect
+  { name = bill }
+\prop_show:N \l_my_rect
+
+\exp_args:No \msg_term:n { name=\rectangle_get:Nn \l_my_rect {name} }
+
+\rectangle_set:Nn \l_my_rect { name = bob, other=hi }
+
+\exp_args:No \msg_term:n { name=\rectangle_get:Nn \l_my_rect {name} }
+\obj_show:n { rectangle }
+
+\msg_term:n {BEGIN-BEGIN}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\msg_term:n { Testing~ball... }
+
+\obj_new:nn { ball }
+  {
+    bounce-factor: int = 4,
+    name: tl,
+    color: color = blue,
+  }
+
+\msg_term:n {hehehe}
+
+\obj_show:n { ball }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\msg_term:n { Creating~a~ball... }
+
+\ball_new:Nn \l_my_ball
+  {
+    name = hello,
+    color = red,
+  }
+
+\msg_term:n { ?~a~ball... }
+
+\exp_args:No \msg_term:n { \ball_get:Nn \l_my_ball { name } }
+
+\ball_show:N \l_my_ball
+
+\msg_term:n { Testing~ball...complete. }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\msg_term:n { Testing~baseball... }
+
+\obj_new:nn { ball / baseball }
+  {
+    games-won: int = 0,
+    stiches: int,
+  }
+
+\obj_show:n { baseball }
+
+\msg_term:n { Testing~baseball...complete. }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\bye
