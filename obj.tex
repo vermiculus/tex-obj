@@ -19,7 +19,15 @@
 
 % \section{Methods, Getters, and Setters}
 
-\cs_new:Nn \obj_method:nnn { \cs_new:cn { #1_#2 } {#3} }
+\cs_new:Nn \obj_method:nnn
+  {
+    \cs_new:cn { #1_#2 }
+      {
+        \cs_set:Nn \obj_this:nN
+          { \prop_get:NnN ##1 {####1} ####2 }
+        #3
+      }
+  }
 \cs_new:Nn \obj_use_method:nn { \use:c { #1_#2 } }
 \cs_new:Nn \__obj_make_getter:nn
   { \obj_method:nnn {#1} { #2:N  } { \prop_item:Nn ##1 {#2}       } }
