@@ -48,7 +48,8 @@
 
 \obj_method:nnn { rectangle } { get_field:NnN }
   {
-    \obj_scope:nn { #2 = #3 } {#3}
+    \obj_this:nN {#2} #3
+%    \obj_scope:nn { #2 = #3 } {#3}
 %    \obj_scope:nn { field = \l_tmpa_tl,
 %                    color = \l_tmpa_color }
 %      {
