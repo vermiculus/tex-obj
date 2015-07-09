@@ -2,13 +2,11 @@
 
 \file_input:n { parsing }
 
-\msg_term:n {begin}
-
 \tl_new:N \l__obj_tmp_tl
 \seq_new:N \l__obj_tmp_seq
 
-\clist_new:N \g__obj_obj__types_clist
-\clist_set:Nn \g__obj_obj__types_clist
+\clist_new:N \g__obj_types_clist
+\clist_set:Nn \g__obj_types_clist
   { obj, tl, seq, int, color }
 
 \msg_new:nnn { obj } { unknown-type }
@@ -117,7 +115,7 @@
       {
         % make sure we know about this type
         \clist_if_in:NVF
-          \g__obj_obj__types_clist
+          \g__obj_types_clist
           \l_parse_dictionary_type_tl
           {
             \msg_warning:nnx { obj } { unknown-type }
